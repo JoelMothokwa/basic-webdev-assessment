@@ -32,20 +32,45 @@ class TodoController {
         return false;
     }
 
-    public function create(Todo $todo) : bool {
-        // implement your code here
+    public function create(Todo $todo): bool {
+        $this->todos[] = $todo;
+        if ($this->writeTodos()) {            
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function update(string $id, Todo $todo): bool {
+        $this->delete($id);
+        $this->create($todo);   //update todo.json file
+        
         return true;
     }
 
-    public function update(string $id, Todo $todo) : bool {
-        // implement your code here
+    public function delete(string $id): bool {
+        foreach ($this->todos as $index=>$todo) {
+            if ($todo->id == $id) {
+                unset($this->todos[$index]);
+                return true;
+            }
+        }
         return true;
     }
 
-    public function delete(string $id) : bool {
-        // implement your code here
+    public function writeTodos(): bool {
+        try {
+            $todos = json_encode($this->todos);
+            $todoFile = fopen(self::PATH, 'a+');
+            ftruncate($todoFile, 0);
+            fwrite($todoFile, $todos);
+            fclose($todoFile);
+        } catch (Exception $ex) {
+            error_log($ex->getMessage());
+            //http_response_code(501);
+            die();
+        }
+
         return true;
     }
-
-    // add any additional functions you need below
 }
