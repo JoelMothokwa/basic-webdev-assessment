@@ -27,13 +27,31 @@ try {
             }
             break;
         case 'POST':
-            //implement your code here
+
+            $obj = json_decode($body);
+
+            $todo = new Todo($obj->id, $obj->title, $obj->description, $obj->done);
+
+            $res = $controller->create($todo);
+            http_response_code(200);
+            die();
             break;
         case 'PUT':
-            //implement your code here
+            $obj = json_decode($body);
+
+            $todo = new Todo($obj->id, $obj->title, $obj->description, $obj->done);
+            $res = $controller->update($todo->id, $todo);
+            http_response_code(200);
+            die();
             break;
         case 'DELETE':
-            //implement your code here
+            $obj = json_decode($body);
+
+            $todo = new Todo($obj->id, $obj->title, $obj->description, $obj->done);
+            $res = $controller->delete($obj->id);
+            $controller->writeTodos();
+            http_response_code(200);
+            die();
             break;
         default:
             http_response_code(501);
